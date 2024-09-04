@@ -3,21 +3,23 @@ from django.db import models
 from products.services import upload_to
 
 NULLABLE = {"blank": True, "null": True}
+DECIMAL = {'max_digits': 10, 'decimal_places': 2}
 
 class Product(models.Model):
     """ Модель для продуктов """
 
-    barcode = models.IntegerField(verbose_name='Штрих-код')
+    id = models.BigIntegerField(primary_key=True, verbose_name='Штрих-код')
     brand = models.CharField(max_length=50, verbose_name='Бренд')
     title = models.CharField(max_length=150, verbose_name='Название')
-    description = models.TextField(verbose_name='Описание')
+    description = models.TextField(verbose_name='Описание', **NULLABLE)
     photo = models.ImageField(upload_to='products/', verbose_name='Фото')
-    volume = models.IntegerField(verbose_name='Объём')
-    weight = models.FloatField(verbose_name='Вес')
+    volume = models.CharField(max_length=50, verbose_name='Объём', **NULLABLE)
+    weight = models.FloatField(verbose_name='Вес', **NULLABLE)
     note = models.TextField(verbose_name='Примечание', **NULLABLE)
-    price_less_200 = models.FloatField(verbose_name='Цена до 200 тыс. рублей')
-    price_more_200 = models.FloatField(verbose_name='Цена от 200 тыс. рублей')
-    price_more_500 = models.FloatField(verbose_name='Цена от 500 тыс. рублей')
+    price_less_200 = models.DecimalField(**DECIMAL, verbose_name='Цена до 200 тыс. рублей')
+    price_more_200 = models.DecimalField(**DECIMAL,verbose_name='Цена от 200 тыс. рублей')
+    price_more_500 = models.DecimalField(**DECIMAL,verbose_name='Цена от 500 тыс. рублей')
+    residue = models.IntegerField(verbose_name='Остаток', **NULLABLE)
     is_stock = models.BooleanField(verbose_name='В наличии', default=True)
 
     def __str__(self):
